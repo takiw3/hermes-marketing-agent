@@ -13,8 +13,7 @@ without your explicit approval at the moment of action.
 
 ## Who it's for
 
-Business owners, entrepreneurs, and executives running companies doing
-$250,000 to $50 million a year — people accountable for revenue who want
+Business owners, entrepreneurs, and executives running companies — people accountable for revenue who want
 marketing work done to an operator's standard, with every fact, assumption,
 and unknown labeled.
 
