@@ -1,8 +1,8 @@
 # Hermes Marketing Agent
 
 A persistent [Hermes](https://hermes-agent.nousresearch.com) profile named
-`marketing`: a senior marketing operator that works underneath your Hermes
-Chief of Staff and directly with you. It researches, analyzes, drafts, and
+`marketing`: a senior marketing operator that works underneath Jarvis, your
+Hermes chief of staff, and directly with you. It researches, analyzes, drafts, and
 recommends. It never publishes, sends, spends, or changes an external system
 without your explicit approval at the moment of action.
 
@@ -30,8 +30,8 @@ and unknown labeled.
 - Funnel analysis, website CRO analysis, measurement and experiment design
 - Marketing reports and a manually run weekly marketing review
 
-Work arrives two ways: your Chief of Staff assigns tasks through Hermes
-Kanban, or you chat with the profile directly. Same standards either way.
+Work arrives two ways: Jarvis assigns tasks through Hermes Kanban, or you
+chat with the profile directly. Same standards either way.
 
 ## What it will not do
 
@@ -48,12 +48,15 @@ Kanban, or you chat with the profile directly. Same standards either way.
 
 ## Requirements
 
-- [Hermes Agent](https://hermes-agent.nousresearch.com) **0.20.5 or newer**
-  — tested against release v2026.8.19 (Hermes 0.20.5) on macOS. The manifest
-  declares `hermes_requires: ">=0.20.5"` because this distribution depends on
-  the path-aware `distribution_owned` allowlist introduced there; on older
-  versions the install is refused with a clear version error — run
-  `hermes update` first.
+- [Hermes Agent](https://hermes-agent.nousresearch.com) **0.20.0 or newer**
+  — the full install suite was run on macOS against **0.20.0, 0.20.1,
+  0.20.2, 0.20.3, 0.20.4, 0.20.5, and 0.20.6** (55 checks each, all
+  passing). 0.20.0 is the honest floor: the path-aware `distribution_owned`
+  allowlist landed in that release (v2026.8.3), and without it the installer
+  copies every top-level repository file into your profile and an update
+  replaces `skills/` wholesale, taking your own skills with it. Below the
+  floor the install is refused with a clear version error and nothing is
+  written (verified on 0.19.1) — run `hermes update` first.
 - A model provider configured in Hermes (any — the profile is
   provider-neutral and hardcodes no models or credentials)
 - No third-party marketing service is required for core operation
@@ -76,7 +79,7 @@ For scripted setups that have **already reviewed this repository**, the
 confirmation prompt can be skipped:
 
 ```
-hermes profile install github.com/takiw3/hermes-marketing-agent --alias --yes
+hermes profile install https://github.com/takiw3/hermes-marketing-agent --alias --yes
 ```
 
 Hermes distributions are unsigned, and installs currently track this
@@ -90,8 +93,7 @@ installing.
 Installing copies the profile's identity, configuration, skills, and
 templates into an isolated Hermes profile named `marketing`. That's all.
 Installation does **not** start onboarding, configure credentials, inherit
-your Chief of Staff's credentials, start a gateway, or launch a
-conversation. The profile uses whatever model provider you configure for it
+Jarvis's credentials, start a gateway, or launch a conversation. The profile uses whatever model provider you configure for it
 in Hermes, and onboarding begins the first time you (or a delegated task)
 actually talk to it.
 
@@ -114,9 +116,30 @@ hermes -p marketing chat
    in your profile's user-owned storage (`local/` and memory) and survives
    updates.
 
-## Working with your Chief of Staff
+## The team
 
-Your Chief of Staff assigns marketing work through Hermes Kanban:
+This profile is one specialist on a team of named Hermes profiles:
+
+| Profile | Owns |
+| --- | --- |
+| **Jarvis** | Chief of staff. Assigns work, collects results, holds priorities across the team. |
+| **Marketing** | This profile. Research, strategy, positioning, copy, content, campaign planning, analysis, reporting. |
+| **Sales** | One-to-one prospect outreach, pipeline, deals, CRM, deal-stage collateral. |
+| **Support** | Customer tickets, help content, post-purchase issues. |
+| **Dev** | Implementation. Site changes, landing pages, tracking, integrations. |
+| **Ads** | Live ad accounts. Launches, bids, budgets, audiences, in-platform optimization. |
+
+Each teammate is its own distribution and is installed separately. Marketing
+works fine alone — if a teammate isn't installed, it says so and hands you
+the finished spec instead of silently doing their job. The seams it respects:
+it plans paid campaigns but never touches a live ad account (Ads), owns
+demand generation up to a qualified lead (Sales), takes voice-of-customer
+evidence from tickets but doesn't answer them (Support), and specifies site
+and tracking changes without implementing them (Dev).
+
+## Working with Jarvis
+
+Jarvis assigns marketing work through Hermes Kanban:
 
 ```
 hermes kanban create "Draft the Q4 launch email sequence" --assignee marketing
@@ -131,12 +154,12 @@ recommendations, never external actions without approval.
 Results come back in a structured handoff (status, deliverables, sources,
 facts vs. assumptions vs. unknowns, checks performed, approvals still
 required, next action). If a task is missing one material fact, the agent
-blocks the task with exactly one question so your Chief of Staff can collect
-the answer. See [docs/chief-of-staff-handoff.md](docs/chief-of-staff-handoff.md).
+blocks the task with exactly one question so Jarvis can collect the answer.
+See [docs/chief-of-staff-handoff.md](docs/chief-of-staff-handoff.md).
 
-Note: a distribution cannot modify your Chief of Staff profile during
-installation. If your Chief of Staff keeps its own roster of specialists,
-add `marketing` to it yourself.
+Note: a distribution cannot modify another profile during installation.
+Installing this repository sets up `marketing` only — if Jarvis keeps its own
+roster of specialists, add `marketing` to it yourself.
 
 ## Example tasks
 
@@ -231,6 +254,10 @@ hermes profile delete marketing
 
 - **`hermes: command not found`** — install Hermes first:
   https://hermes-agent.nousresearch.com
+- **"This distribution requires Hermes >=0.20.0, but you have …"** — your
+  Hermes predates the file-ownership guarantees this profile relies on. Run
+  `hermes update`, then install again. Nothing was written by the refused
+  install.
 - **Install prompt shows unexpected files** — you're being asked to confirm
   the manifest; review it. Only identity, config, skills, and templates
   should be listed.

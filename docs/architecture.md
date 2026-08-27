@@ -12,7 +12,7 @@ Kanban.
 | Layer | Files | Job |
 | ----- | ----- | --- |
 | Distribution manifest | `distribution.yaml` | Identity, version, license, requirements, and the exact list of runtime files the distribution owns. |
-| Routing metadata | `profile.yaml` | Display name and the routing description the Chief of Staff / Kanban orchestrator uses to decide what to assign here. |
+| Routing metadata | `profile.yaml` | Display name and the routing description Jarvis (the chief-of-staff profile) and the Kanban orchestrator use to decide what to assign here. |
 | Identity | `SOUL.md` | Who the agent is, its working loop, evidence standards, approval rules, and completion standard. |
 | Configuration | `config.yaml` | Provider-neutral behavior settings. No models, credentials, paths, or services hardcoded. |
 | Skills | `skills/marketing-core/` | 17 focused capabilities, one directory per skill, each with its own trigger, procedure, output contract, verification checklist, and a skill-local `templates/` directory holding its deliverable format (Hermes resolves a skill's template references against the skill's own directory, so these paths survive any install location). |
@@ -52,7 +52,7 @@ working loop — so skills don't repeat it and can't drift from it.
 
 ```
 Owner ──direct chat──▶ marketing profile
-Owner ──assigns──▶ Chief of Staff ──Kanban task──▶ marketing profile
+Owner ──assigns──▶ Jarvis (chief of staff) ──Kanban task──▶ marketing profile
                                         ▲                 │
                                         └──result / one ──┘
                                            blocking question

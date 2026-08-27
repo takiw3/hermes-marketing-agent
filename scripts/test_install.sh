@@ -4,8 +4,9 @@
 # Runs every install/update check against throwaway HOME and HERMES_HOME
 # directories — it never reads or writes your real Hermes profiles.
 #
-# Requirements: a Hermes CLI >= 0.20.5 (the version this distribution is
-# tested against; older CLIs ignore distribution_owned and fail these tests).
+# Requirements: a Hermes CLI >= 0.20.0. Below that the path-aware
+# distribution_owned allowlist does not exist, the installer copies every
+# top-level repo entry, and these tests fail by design.
 #
 # Usage:
 #   bash scripts/test_install.sh                          # from the local repo
@@ -79,9 +80,10 @@ say ""
 say "== profile info / show / describe =="
 INFO="$("$HERMES_BIN" profile info marketing 2>&1)"
 require "info reports the distribution name"    grep -q "marketing" <<<"$INFO"
-require "info reports version 1.0.0"            grep -q "1.0.0" <<<"$INFO"
+VERSION="$(sed -n 's/^version: *//p' "$REPO/distribution.yaml" | head -1)"
+require "info reports version $VERSION"         grep -q "$VERSION" <<<"$INFO"
 require "info reports the source"               grep -q "$SOURCE" <<<"$INFO"
-require "info reports hermes_requires >=0.20.5" grep -q ">=0.20.5" <<<"$INFO"
+require "info reports hermes_requires >=0.20.0" grep -q ">=0.20.0" <<<"$INFO"
 
 SHOW="$("$HERMES_BIN" profile show marketing 2>&1)"
 require "show finds the profile"                grep -q "marketing" <<<"$SHOW"
@@ -131,7 +133,7 @@ require "wrapper targets the profile"  grep -q '\-p "\?marketing"\?\|--profile "
 
 say ""
 say "== README command parity =="
-README_CMD="hermes profile install github.com/takiw3/hermes-marketing-agent --alias"
+README_CMD="hermes profile install https://github.com/takiw3/hermes-marketing-agent --alias"
 if grep -qF "$README_CMD" "$REPO/README.md"; then
   ok "README primary install command matches the tested command form"
 else
@@ -154,8 +156,9 @@ else
   printf -- '---\nname: custom-user-skill\ndescription: User-created probe skill.\n---\nBody.\n' \
     > "$PROFILE_DIR/skills/custom-user-skill/SKILL.md"
 
-  # Mutate the staged source into "v1.0.1".
-  sed -i.bak 's/^version: 1.0.0$/version: 1.0.1/' "$SOURCE/distribution.yaml" && rm -f "$SOURCE/distribution.yaml.bak"
+  # Mutate the staged source into a bumped version.
+  NEWVER="${VERSION%.*}.$(( ${VERSION##*.} + 1 ))"
+  sed -i.bak "s/^version: .*/version: $NEWVER/" "$SOURCE/distribution.yaml" && rm -f "$SOURCE/distribution.yaml.bak"
   printf '\n<!-- update-marker-v101 -->\n' >> "$SOURCE/SOUL.md"
 
   if "$HERMES_BIN" profile update marketing -y > "$TESTROOT/update.log" 2>&1; then
@@ -172,7 +175,7 @@ else
   require "config.yaml override preserved"    grep -q "user-config-override-marker" "$PROFILE_DIR/config.yaml"
   require "user-created skill preserved"      test -f "$PROFILE_DIR/skills/custom-user-skill/SKILL.md"
   require "distribution-owned SOUL.md updated" grep -q "update-marker-v101" "$PROFILE_DIR/SOUL.md"
-  require "manifest version updated to 1.0.1"  grep -q "1.0.1" <<<"$("$HERMES_BIN" profile info marketing 2>&1)"
+  require "manifest version updated to $NEWVER"  grep -q "$NEWVER" <<<"$("$HERMES_BIN" profile info marketing 2>&1)"
 fi
 
 say ""

@@ -30,11 +30,12 @@ PROFILE_ID = "marketing"
 LICENSE_ID = "MIT"
 COPYRIGHT_LINE = "Copyright (c) 2026 TakiGPT AI Inc."
 GITHUB_SLUG = "takiw3/hermes-marketing-agent"
+HERMES_REQUIRES = ">=0.20.0"
 # Split so this file never matches its own containment scan.
 COMMUNITY_URL = "skool.com/" + "agenticaiacademy"
 
-INSTALL_CMD = f"hermes profile install github.com/{GITHUB_SLUG} --alias"
-INSTALL_CMD_YES = f"hermes profile install github.com/{GITHUB_SLUG} --alias --yes"
+INSTALL_CMD = f"hermes profile install https://github.com/{GITHUB_SLUG} --alias"
+INSTALL_CMD_YES = f"hermes profile install https://github.com/{GITHUB_SLUG} --alias --yes"
 CHAT_CMD = f"hermes -p {PROFILE_ID} chat"
 UPDATE_CMD = f"hermes profile update {PROFILE_ID}"
 REMOVE_CMD = f"hermes profile delete {PROFILE_ID}"
@@ -88,8 +89,8 @@ REQUIRED_FILES = [
     "examples/README.md",
 ] + [f"skills/marketing-core/{s}/SKILL.md" for s in SKILLS]
 
-# Frontmatter contract, verified against the Hermes skill loader at release
-# v2026.8.19 (0.20.5): loader hard-requires name (<=64) + description
+# Frontmatter contract, verified against the Hermes skill loader
+# (0.20.0-0.20.6): loader hard-requires name (<=64) + description
 # (<=1024) + non-empty body, file <=100k chars; version/author/license are
 # authoring conventions this repo enforces; tags and related_skills live
 # under `metadata.hermes.`, never top-level.
@@ -443,8 +444,14 @@ def check_distribution_owned(f: Findings) -> None:
         if required not in normalized:
             f.add("distribution-owned", f"distribution.yaml: `{required}` must be distribution-owned")
     requires = str(data.get("hermes_requires", ""))
-    if not requires:
-        f.add("distribution-owned", "distribution.yaml: hermes_requires must be set (the distribution_owned contract needs Hermes >=0.20.5)")
+    if requires != HERMES_REQUIRES:
+        f.add(
+            "distribution-owned",
+            f"distribution.yaml: hermes_requires must be `{HERMES_REQUIRES}` — the "
+            "path-aware distribution_owned allowlist landed in Hermes 0.20.0, and "
+            "below it the installer copies every top-level file and update replaces "
+            "skills/ wholesale",
+        )
 
 
 def check_ci_pinning(f: Findings) -> None:

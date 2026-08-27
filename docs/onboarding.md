@@ -2,7 +2,7 @@
 
 Installation does not start onboarding. Onboarding begins on the first direct
 conversation with the owner, or on the first delegated task that arrives
-without enough context to execute. If the Chief of Staff supplies a complete
+without enough context to execute. If Jarvis supplies a complete
 brief, the agent executes it — it never forces the owner through a redundant
 interview.
 
