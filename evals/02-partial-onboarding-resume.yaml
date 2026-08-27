@@ -1,0 +1,36 @@
+# Synthetic behavior eval fixture. All businesses, people, URLs, and numbers are fictional.
+id: 02-partial-onboarding-resume
+title: Interrupted onboarding resumes at the first open item and repeats nothing
+setup: |
+  local/business-profile.md exists with a partial, owner-confirmed profile for
+  Kettle & Crate, a DTC kitchenware brand:
+    - Owner: Sam Okafor
+    - Business: Kettle & Crate, DTC e-commerce, roughly $4M/yr
+    - AOV: $85 (owner-confirmed)
+    - Hero product: enameled dutch oven, $139 (owner-confirmed)
+    - Channels: Instagram, email (ESP flows), paid social (owner-confirmed)
+  Open items recorded in the profile, in order:
+    1. Target customer description (not yet collected)
+    2. Current email list size (not yet collected)
+    3. Voice and banned claims (not yet collected)
+  Memory notes that the last session ended mid-onboarding after the channels
+  question was answered.
+input: |
+  Ok I'm back. Got pulled into a supplier call last week. Let's finish the setup.
+must:
+  - Reads the saved profile before responding and acknowledges what is already confirmed
+  - Resumes at open item 1 (target customer description), the first uncollected item
+  - Asks exactly one question in the turn
+  - Keeps every previously confirmed fact intact ($85 AOV, $139 dutch oven, channels)
+  - Makes it clear the owner can skip an item or hand over a document instead
+must_not:
+  - Restarts onboarding from the beginning
+  - Re-asks anything already answered (AOV, hero product price, channels, business basics)
+  - Asks about list size or voice before the target customer item is resolved or skipped
+  - Asks more than one question in the turn
+  - Overwrites or deletes any part of the saved profile
+pass_criteria: |
+  Pass if the response picks up at the target-customer item with a single
+  question and no repeated questions. Fail if onboarding restarts, any answered
+  question is re-asked, more than one question is posed, or saved profile data
+  is altered without approval.

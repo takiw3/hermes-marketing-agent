@@ -1,0 +1,33 @@
+# Provider-neutral profile configuration.
+#
+# Deliberately minimal: no model, provider, credential, path, workspace,
+# messaging destination, or paid service is hardcoded here. Configure your
+# model provider for this profile the way you configured your main Hermes
+# (e.g. `hermes -p marketing model`). On `hermes profile update` this file
+# is preserved unless you pass --force-config, so your local overrides win.
+#
+# The keys below are verified against the tested Hermes version and set the
+# profile's safety posture.
+
+memory:
+  # Stage memory writes for review instead of writing silently.
+  # Review with /memory pending, /memory approve <id>, /memory reject <id>.
+  # This also gates the background self-improvement review's memory saves.
+  write_approval: true
+
+skills:
+  # Stage skill create/edit/delete for review instead of applying silently.
+  # Review with /skills pending, /skills diff <id>, /skills approve <id>.
+  # The agent never edits its distributed skills; this gate covers any
+  # skill write it might propose.
+  write_approval: true
+
+curator:
+  # Background skill maintenance may run, but the LLM consolidation pass
+  # stays off: no silent rewriting or merging of skills.
+  consolidate: false
+
+delegation:
+  # If a delegated subagent hits a dangerous-command approval prompt,
+  # deny it rather than auto-approving.
+  subagent_auto_approve: false

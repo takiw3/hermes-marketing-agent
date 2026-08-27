@@ -1,0 +1,33 @@
+# Hermes Profile Distribution manifest.
+# Schema verified against hermes_cli/profile_distribution.py at release
+# v2026.8.19 (Hermes 0.20.5). `source` and `installed_at` are written by the
+# installer and are intentionally not authored here.
+name: marketing
+version: 1.0.0
+description: >-
+  Marketing specialist profile for business owners: research, strategy,
+  positioning, copywriting, email, social, paid-campaign planning, funnel
+  analysis, CRO, competitor intelligence, measurement, and reporting.
+  Produces evidence-backed drafts and recommendations; every external action
+  requires explicit approval.
+hermes_requires: ">=0.20.5"
+author: Taki Wong / TakiGPT AI Inc.
+license: MIT
+
+# No environment variables are required: the profile is provider-neutral and
+# depends on no third-party marketing service for core operation.
+
+# Explicit runtime allowlist. Only these paths are copied on install and
+# replaced on update (Hermes >=0.20.5 honors this path-aware list — the
+# reason for the hermes_requires floor above). Everything else in this
+# repository (README, docs, tests, evals, CI, contributor files) never
+# reaches an installed profile, and user-owned data (.env, memory, sessions,
+# local/, config overrides, skills outside skills/marketing-core/) is never
+# touched by updates.
+distribution_owned:
+  - distribution.yaml
+  - profile.yaml
+  - SOUL.md
+  - config.yaml
+  - templates
+  - skills/marketing-core

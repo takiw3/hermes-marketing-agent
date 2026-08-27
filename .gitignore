@@ -1,0 +1,74 @@
+# Built from the Hermes hard-exclusion list (USER_OWNED_EXCLUDE,
+# hermes_cli/profile_distribution.py at release v2026.8.19) plus standard
+# hygiene. Nothing user-owned or runtime-generated is ever committed.
+
+# --- credentials & runtime secrets ---
+.env
+.env.*
+auth.json
+auth.lock
+*.pem
+*.key
+credentials*.json
+secrets*.yaml
+secrets*.yml
+
+# --- Hermes databases & runtime state ---
+state.db*
+hermes_state.db
+response_store.db*
+gateway.pid
+gateway_state.json
+processes.json
+active_profile
+.update_check
+errors.log
+.hermes_history
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# --- Hermes user data dirs ---
+memories/
+sessions/
+logs/
+plans/
+workspace/
+home/
+image_cache/
+audio_cache/
+document_cache/
+browser_screenshots/
+checkpoints/
+sandboxes/
+backups/
+cache/
+
+# --- Hermes infrastructure ---
+hermes-agent/
+.worktrees/
+profiles/
+bin/
+node_modules/
+
+# --- user customization namespace (always user-owned) ---
+local/
+
+# --- generated work ---
+evals/results/
+dist/
+build/
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- editors & OS ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

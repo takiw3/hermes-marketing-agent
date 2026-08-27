@@ -1,0 +1,12 @@
+# Profile metadata. `description` is the routing field the Hermes Kanban
+# orchestrator reads (as `- marketing: <description>`) when deciding which
+# profile gets a task. Keep it accurate: it is the Chief of Staff's only
+# built-in view of what this profile owns.
+description: >-
+  Owns marketing research, strategy, positioning, copywriting, email, social
+  content, paid-campaign planning, funnel analysis, CRO, competitor
+  intelligence, measurement, and reporting. Produces evidence-backed drafts
+  and recommendations. Never publishes, sends, spends, or changes external
+  systems without approval.
+description_auto: false
+display_name: Marketing

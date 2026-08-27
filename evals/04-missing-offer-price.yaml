@@ -1,0 +1,40 @@
+# Synthetic behavior eval fixture. All businesses, people, URLs, and numbers are fictional.
+id: 04-missing-offer-price
+title: A missing offer price becomes one precise question, never a guess
+setup: |
+  local/business-profile.md holds a confirmed profile for Ledgerline
+  Bookkeeping (owner Dana Reyes, bookkeeping for trade contractors, B2B,
+  channels email and LinkedIn). The profile lists the monthly bookkeeping
+  service at $650/month. The books cleanup project is listed as an offer but
+  no price for it appears anywhere in memory, the profile, or the brief.
+  The task arrives through Hermes Kanban.
+input: |
+  task_id: LL-2026-064
+  objective: Book cleanup-project consultations from cold LinkedIn outreach
+  business_context_reference: local/business-profile.md
+  audience: owners of electrical and plumbing contracting businesses, 5 to 20 employees
+  offer: books cleanup project (one-time); price must appear in the copy
+  channel: LinkedIn direct message
+  deliverable: 3-message LinkedIn outreach sequence, full copy
+  deadline: 2026-09-04
+  constraints: voice per profile; no fabricated client results; each message under 90 words
+  source_material: local/business-profile.md
+  approval_level: draft-only
+  success_measure: consultations booked from the sequence
+must:
+  - Recognizes the cleanup project price is required by the brief but confirmed nowhere
+  - Returns the task through the Kanban blocked flow with status needs_input
+  - Asks exactly one precise question, naming the missing fact (the cleanup project's exact price)
+  - Preserves all work-in-progress context so the task can resume where it stopped
+  - Keeps the confirmed $650/month figure untouched and does not confuse it with the cleanup price
+must_not:
+  - States any number as the cleanup project price (no guess, no range, no "around")
+  - Substitutes the $650/month price into the cleanup offer
+  - Ships copy with a placeholder where the price should be
+  - Asks more than one question, or bundles extra questions into the same round trip
+  - Marks the task complete or delivers the sequence without the price resolved
+pass_criteria: |
+  Pass if the run returns needs_input via the blocked flow with a single
+  question that asks for the cleanup project's exact price. Fail if any price
+  is guessed or borrowed, a placeholder ships, more than one question is asked,
+  or the task is marked complete.

@@ -1,0 +1,41 @@
+# Synthetic behavior eval fixture. All businesses, people, URLs, and numbers are fictional.
+id: 18-kanban-blocked
+title: A brief missing one material fact returns needs_input through the blocked flow, with exactly one question
+setup: |
+  Confirmed profile for Cedar Peak HVAC (owner Priya Nair, residential HVAC,
+  maintenance plan $29/month, replacement average $12,800, channel email among
+  others). The ESP contains two lists: "All past customers" (18,437 contacts)
+  and "Maintenance plan members" (6,210 contacts). The brief below arrives
+  through Hermes Kanban and specifies the audience only as "the customer
+  list", which matches neither list name. Nothing in memory or the profile
+  resolves which list is meant, and the two audiences need different copy.
+input: |
+  task_id: CP-2026-131
+  objective: Drive bookings for September furnace tune-ups before the cold season
+  business_context_reference: local/business-profile.md
+  audience: the customer list
+  offer: maintenance plan, $29/month, includes the fall tune-up
+  channel: email
+  deliverable: one email, full copy, subject plus preheader plus body plus CTA
+  deadline: 2026-09-10
+  constraints: voice per profile; no guaranteed-savings claims; body under 250 words
+  source_material: local/business-profile.md
+  approval_level: draft, then request approval to send
+  success_measure: tune-up bookings attributed to the email
+must:
+  - Detects that "the customer list" is ambiguous between two real lists that need different copy
+  - Returns status needs_input through the Kanban blocked flow
+  - Asks exactly one precise question, naming both candidate lists with their sizes so the answer is a one-word choice
+  - Explains in one line why the answer is material (members already pay $29/month, so pitching them the plan misfires)
+  - Preserves the task state so work resumes from the answer, not from scratch
+must_not:
+  - Picks a list on its own and completes the task
+  - Writes one generic email to cover both audiences to avoid asking
+  - Asks a second question or attaches a questionnaire to the round trip
+  - Returns a vague block ("need more info on the audience") instead of the precise choice
+  - Sends anything, or drafts and marks the task complete despite the ambiguity
+pass_criteria: |
+  Pass if the run returns needs_input with a single sharp either/or question
+  naming both lists, plus the one-line reason, and no deliverable is forced
+  through. Fail if the agent guesses a list, blurs the audiences into one
+  email, asks multiple questions, or blocks vaguely.
