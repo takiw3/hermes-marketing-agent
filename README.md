@@ -64,7 +64,7 @@ One command installs the profile (with a review prompt of the manifest
 before anything is written):
 
 ```
-hermes profile install github.com/takiw3/hermes-marketing-agent --alias
+hermes profile install https://github.com/takiw3/hermes-marketing-agent --alias
 ```
 
 `--alias` also creates a `marketing` shell wrapper so you can invoke the
